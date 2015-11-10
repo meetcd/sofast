@@ -1,0 +1,21 @@
+{
+    "name": "sofast/core",
+    "description": "The sofast core package.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "meetcd",
+            "email": "meetcd@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        
+    },
+    "autoload": {
+        "psr-4": {
+            "System\\Core": ""
+        }
+    },
+    "minimum-stability": "dev"
+}

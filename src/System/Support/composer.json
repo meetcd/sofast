@@ -1,0 +1,23 @@
+{
+    "name": "sofast/support",
+    "description": "The sofast support package.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "meetcd",
+            "email": "meetcd@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+    },
+    "autoload": {
+        "psr-4": {
+            "System\\Support": ""
+        },
+        "files": [
+            "helpers.php"
+        ]
+    },
+    "minimum-stability": "dev"
+}
