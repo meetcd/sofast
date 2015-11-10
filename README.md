@@ -1,2 +1,2 @@
 # sofast
-so fast PHP framework
+一个很快捷的PHP框架
