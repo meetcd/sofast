@@ -4,6 +4,7 @@
   "description": "A php framworker.",
   "homepage": "http://meetcd.sinaapp.com",
   "license": "MIT",
+  "version": "1.0.1",
   "authors": [
     {
       "name": "meetcd",
