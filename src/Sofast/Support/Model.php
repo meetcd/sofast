@@ -1,5 +1,5 @@
 <?php
-namespace System\Support;
+namespace Sofast\Support;
 class Model
 {	
 	public function __construct(){}

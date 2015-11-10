@@ -1,6 +1,6 @@
 <?php
-namespace System\Core;
-use System\core\loader as myloader;
+namespace Sofast\Core;
+use Sofast\core\loader as myloader;
 class config
 {
 	private static $sfConfig = array();

@@ -1,8 +1,8 @@
 <?php
-namespace System\Core;
-use System\Core\Config;
-use System\Core\Router;
-use System\Core\Lang;
+namespace Sofast\Core;
+use Sofast\Core\Config;
+use Sofast\Core\Router;
+use Sofast\Core\Lang;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class bootstrap {

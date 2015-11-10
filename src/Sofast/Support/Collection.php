@@ -1,5 +1,5 @@
 <?php
-namespace System\Support;
+namespace Sofast\Support;
 class Collection
 {
 	private $cur_row			= 0;

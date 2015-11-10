@@ -1,8 +1,8 @@
 <?php
-namespace System\Support;
-use System\Core\Config;
-use System\Core\Sf;
-use System\Core\Lang;
+namespace Sofast\Support;
+use Sofast\Core\Config;
+use Sofast\Core\Sf;
+use Sofast\Core\Lang;
 
 class View
 {

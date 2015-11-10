@@ -1,5 +1,5 @@
 <?php
-namespace System\Core;
+namespace Sofast\Core;
 class loader
 {
 

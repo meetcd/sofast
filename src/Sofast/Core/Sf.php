@@ -1,6 +1,6 @@
 <?php
-namespace System\Core;
-use System\Core\Exception as sfException;
+namespace Sofast\Core;
+use Sofast\Core\Exception as sfException;
 use Composer\Autoload\ClassLoader;
 class sf
 {

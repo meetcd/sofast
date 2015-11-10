@@ -1,6 +1,6 @@
 <?php
-namespace System\Support;
-use System\Support\Collection;
+namespace Sofast\Support;
+use Sofast\Support\Collection;
 class Pager extends Collection
 {
 	private $maxnum;

@@ -1,5 +1,5 @@
 <?php
-namespace System\Core;
+namespace Sofast\Core;
 /**
  * 类名：lang
  * 功能：处理语言的国际化（多语言）

@@ -1,7 +1,7 @@
 <?php
-namespace System\Core;
-use System\Core\Exception as sfException;
-use System\Core\Lang;
+namespace Sofast\Core;
+use Sofast\Core\Exception as sfException;
+use Sofast\Core\Lang;
 /**
  * 路由控制
  */

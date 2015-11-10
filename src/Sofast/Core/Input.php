@@ -1,5 +1,5 @@
 <?php
-namespace System\Core;
+namespace Sofast\Core;
 class input
 {
 	private static $sfInput = array();
