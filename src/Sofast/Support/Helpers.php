@@ -1,5 +1,7 @@
 <?php
+use Sofast\Core\Sf;
 use Sofast\Core\Config;
+use Sofast\Core\Router;
 if (! function_exists('append_config')) {
     /**
      * Assign high numeric IDs to a config item to force appending.

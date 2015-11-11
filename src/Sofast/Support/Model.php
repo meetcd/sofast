@@ -1,5 +1,6 @@
 <?php
 namespace Sofast\Support;
+use Sofast\Core\Sf;
 class Model
 {	
 	public function __construct(){}

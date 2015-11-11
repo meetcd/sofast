@@ -77,10 +77,5 @@ class View
 		exit(self::parse($tpl));
 	}
 	
-	public static function part($part,$key='')
-	{
-		return self::getContent($part);
-	}
-
 }
 ?>
