@@ -1,6 +1,8 @@
 <?php
 namespace Sofast\Support;
+use Sofast\Core\Lang;
 use Sofast\Support\Collection;
+
 class Pager extends Collection
 {
 	private $maxnum;
@@ -76,7 +78,6 @@ class Pager extends Collection
 		$querystring[] = "totalnum" . $this->key . "/" . $this->totalnum;
 
 		if (isset($_GET["maxnum" . $this->key])) $querystring[] = "maxnum" . $this->key . "/" . $this->maxnum;
-		loader::helper("url");
 		$this->linkhead = site_url(implode("/",$querystring));
 	}
 

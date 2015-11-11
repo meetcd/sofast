@@ -8,6 +8,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 class bootstrap {
 	private static function init()
 	{
+		session_start();
 		config::set('start_time',getmicrotime());
 		//加载配置文件
 		config::init();

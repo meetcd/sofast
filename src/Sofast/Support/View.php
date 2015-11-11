@@ -76,6 +76,11 @@ class View
 	{
 		exit(self::parse($tpl));
 	}
+
+	public static function part($tpl)
+	{
+		return self::getContent($tpl);
+	}
 	
 }
 ?>

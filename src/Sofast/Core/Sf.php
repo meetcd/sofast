@@ -1,7 +1,7 @@
 <?php
 namespace Sofast\Core;
 use Sofast\Core\Exception as sfException;
-use Composer\Autoload\ClassLoader;
+
 class sf
 {
 	private static $sfObject = array('model'=>array(),
@@ -73,7 +73,7 @@ class sf
 		$_class = explode("/",$class);
 		if(count($_class) > 1){
 			$class = array_pop($_class);
-			$path = implode("/",$_class)."/";
+			$path = implode("/",$_class)."\\";
 		}else $path = '';
 		
 		if(self::has($class , $type)){

@@ -1,6 +1,10 @@
 <?php
 namespace Sofast\Support;
 use Sofast\Core\Sf;
+use Sofast\Core\Router;
+use Sofast\Support\Collection;
+use Sofast\Support\Pager;
+
 class Model
 {	
 	public function __construct(){}
@@ -22,7 +26,7 @@ class Model
 		
 		$query = $db->query($sql);
 		
-		return sf::getLib("collection",clone $this,$db->result_array($query));
+		return new collection(clone $this,$db->result_array($query));
 	}
 	
 	public function getPager($addWhere = '',$addSql = '',$showMax = 20,$select = '',$key = '',$form_vars=array())
@@ -42,7 +46,7 @@ class Model
 			$total = $row['NUM'];
 		}else $total = router::get("totalnum".$key);
 		
-		$pager = sf::getLib("pager",$total,$showMax,$key,$form_vars);
+		$pager = new pager($total,$showMax,$key,$form_vars);
 		$sql .= "LIMIT ".$pager->getStartNum().",".$pager->getShowNum();
 		$query = $db->query($sql);
 		
