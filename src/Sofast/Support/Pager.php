@@ -111,27 +111,27 @@ class Pager extends Collection
 
             for ($i = $startpage; $i <= $endpage; $i++)
             {
-                if ($i == $this->pagenum) $str_num .= " <font color=\"".$nolink_color."\">".$i."</font> ";
-                else $str_num .= " <a href=\"".$this->linkhead."/pagenum".$this->key."/".$i."\">".$i."</a> ";
+            	if ($i == $this->pagenum) $str_num .= " <li class=\"active\"><a href='#'>".$i."</a></li> ";
+            	else $str_num .= " <li><a href=\"".$this->linkhead."/pagenum".$this->key."/".$i."\">".$i."</a></li> ";
             }
         }
 
         if ($this->pagenum > 1)
         {
-            $str_first = " <a href=\"".$this->linkhead."/pagenum".$this->key."/1\">".$this->navchar[0]."</a> ";
-            $str_pre   = " <a href=\"".$this->linkhead."/pagenum".$this->key."/".($this->pagenum-1)."\">".$this->navchar[1]."</a> ";
+        	$str_first = " <li><a href=\"".$this->linkhead."/pagenum".$this->key."/1\">".$this->navchar[0]."</a></li> ";
+        	$str_pre   = " <li><a href=\"".$this->linkhead."/pagenum".$this->key."/".($this->pagenum-1)."\">".$this->navchar[1]."</a></li> ";
         }else if ($nolink_show){
-            $str_first = " <font color=\"".$nolink_color."\">".$this->navchar[0]."</font> ";
-            $str_pre   = " <font color=\"".$nolink_color."\">".$this->navchar[1]."</font> ";
+            $str_first = " <li class=\"previous\"><a href='#'>".$this->navchar[0]."</a></li> ";
+            $str_pre   = " <li class=\"next\"><a href='#'>".$this->navchar[1]."</a></li> ";
         }
 
         if ($this->pagenum < $this->totalpage)
         {
-            $str_next  = " <a href=\"".$this->linkhead."/pagenum".$this->key."/".($this->pagenum+1)."\">".$this->navchar[2]."</a> ";
-            $str_last  = " <a href=\"".$this->linkhead."/pagenum".$this->key."/".$this->totalpage."\">".$this->navchar[3]."</a> 　";
+        	$str_next  = " <li><a href=\"".$this->linkhead."/pagenum".$this->key."/".($this->pagenum+1)."\">".$this->navchar[2]."</a></li> ";
+        	$str_last  = " <li><a href=\"".$this->linkhead."/pagenum".$this->key."/".$this->totalpage."\">".$this->navchar[3]."</a></li> ";
         }else if ($nolink_show){
-            $str_next  =" <font color=\"".$nolink_color."\">".$this->navchar[2]."</font> ";
-            $str_last  =" <font color=\"".$nolink_color."\">".$this->navchar[3]."</font> ";
+            $str_next  =" <li class=\"previous\"><a href='#'>".$this->navchar[2]."</a></li> ";
+            $str_last  =" <li class=\"previous\"><a href='#'>".$this->navchar[3]."</a></li> ";
         }
 
         return $str_first.$str_pre.$str_frontell.$str_num.$str_backell.$str_next.$str_last;

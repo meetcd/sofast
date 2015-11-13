@@ -1,6 +1,6 @@
 <?php
 namespace Sofast\Core;
-use Sofast\core\loader as myloader;
+
 class config
 {
 	private static $sfConfig = array();
@@ -17,14 +17,7 @@ class config
 	{
 		$agrs = func_get_args();
 		for($i=0,$n=count($agrs);$i<$n;$i++)
-			($config = myloader::config($agrs[$i])) && self::$sfConfig = array_merge(self::$sfConfig,(array)$config);
-	}
-	
-	public static function scan()
-	{
-		$agrs = func_get_args();
-		for($i=0,$n=count($agrs);$i<$n;$i++)
-			($config = myloader::config($agrs[$i])) && self::$sfConfig = array_merge(self::$sfConfig,(array)$config);
+			include_dir($agrs[$i]);
 	}
 	
 	public static function set()

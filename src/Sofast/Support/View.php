@@ -27,7 +27,7 @@ class View
 		extract(self::$viewData);
 		ob_start();
 		if(is_file(config::get("view_dir").$tpl.".php")){
-			include_once(config::get("view_dir").$tpl.".php");
+			include(config::get("view_dir").$tpl.".php");
 		}
 		
 		self::$viewData[$key] = ob_get_contents();

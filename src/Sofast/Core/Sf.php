@@ -1,7 +1,7 @@
 <?php
 namespace Sofast\Core;
 use Sofast\Core\Exception as sfException;
-
+use ReflectionClass;
 class sf
 {
 	private static $sfObject = array('model'=>array(),
@@ -84,7 +84,7 @@ class sf
 
 		try{			
 			$class = 'App\\'.$type.'\\'.$path.$class;
-			$reflectionClass = new \ReflectionClass($class); 
+			$reflectionClass = new ReflectionClass($class); 
 			$Instance = $reflectionClass->getConstructor() ? $reflectionClass->newInstanceArgs($agrs) : $reflectionClass->newInstance(); 
 			self::set($Instance , $type);
 			return $Instance;

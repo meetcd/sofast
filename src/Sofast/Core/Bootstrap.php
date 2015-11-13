@@ -3,6 +3,7 @@ namespace Sofast\Core;
 use Sofast\Core\Config;
 use Sofast\Core\Router;
 use Sofast\Core\Lang;
+use Sofast\Core\Exception as sfException;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class bootstrap {
@@ -36,7 +37,7 @@ class bootstrap {
 				throw new sfException(sprintf(lang::get("Call to undefined method %s::%s"),get_class($controller),router::getMethod()));
 			$controller->{router::getMethod()}();
 			method_exists($controller , "shutdown") && $controller->shutdown();
-		}catch(tfException $e){
+		}catch(sfException $e){
 			method_exists($controller , "shutdown") && $controller->shutdown();
 			$e->halt();
 		}	
