@@ -28,6 +28,7 @@ class bootstrap {
 		//启动数据组件
 		$Capsule = new Capsule;
 		$Capsule->addConnection(config::get('database'));
+		// 使用DB
 		$Capsule->bootEloquent();
 
 		$controller = sf::getController(router::getController());

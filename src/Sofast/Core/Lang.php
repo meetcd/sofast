@@ -13,7 +13,7 @@ class lang
 	public static function init($dir = '')
 	{
 		$dir = $dir ? APPPATH. $dir . '/' : APPPATH.'language/';
-		include_dir($dir);
+		include_dir($dir.self::getLang());
 	}
 
 	/**
