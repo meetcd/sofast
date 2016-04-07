@@ -4,17 +4,6 @@ namespace Sofast\Support;
 abstract class Facade
 {
     protected $resolvedInstance = array();
-	/**
-     * Get the registered name of the component.
-     *
-     * @return string
-     *
-     * @throws \RuntimeException
-     */
-    protected static function getFacadeAccessor()
-    {
-        throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
-    }
 
     /**
      * Resolve the facade root instance from the container.
@@ -25,9 +14,6 @@ abstract class Facade
     protected static function getInstance()
     {
 		return static::getFacadeAccessor();
-		//if(isset(static::$resolvedInstance[__CLASS__])) return static::$resolvedInstance[__CLASS__];
-		//static::$resolvedInstance[__CLASS__] = static::getFacadeAccessor();
-		//return static::$resolvedInstance[__CLASS__];
     }
 
     /**
