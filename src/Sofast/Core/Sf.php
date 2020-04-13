@@ -1,7 +1,22 @@
 <?php
+/**
+ * SF框架容器
+ *
+ * SF框架是一个快速简单的PHP框架
+ *
+ * @link        https://www.meetcd.com/sf
+ * @copyright   2017
+ * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
+ */
 namespace Sofast\Core;
+use Sofast\Core\Config;
+use Sofast\Core\Router;
+use Sofast\Core\Lang;
+use Sofast\Core\Session;
 use Sofast\Core\Exception as sfException;
+use Illuminate\Database\Capsule\Manager as Capsule;
 use ReflectionClass;
+
 class sf
 {
 	private static $sfObject = array('model'=>array(),
@@ -9,6 +24,8 @@ class sf
 									 'controller'=>array(),
 									 'plugin'=>array());
 	private static $version = '3.0';
+	private static $module  = 'App';
+	private static $loader  = NULL;
 	
 	public function __construct(){}
 	
@@ -17,12 +34,27 @@ class sf
 		return self::$version;
 	}
 	
+	/**
+     * 寄存对象到容器
+     *
+     * @param object $object
+	 * @param string $type
+     * @return void
+     */
 	private static function set($object,$type = "controller")
 	{
 		if(!in_array(get_class($object),self::$sfObject[$type]))
 			self::$sfObject[$type][get_class($object)] = $object;
 	}
 	
+	/**
+     * 从容器获取对象
+     * 
+	 * 如果存在需要的对象直接返回对象，不存在返回FALSE
+     * @param object $object
+	 * @param string $type
+     * @return object
+     */
 	public static function get($object,$type = "controller")
 	{
 		if(self::has($object,$type))
@@ -30,14 +62,58 @@ class sf
 		else return false;
 	}
 	
+	/**
+     * 返回模块名称
+     * 
+     * @return string
+     */
+	public static function getModule()
+	{
+		return self::$module;
+	}
+	
+	/**
+     * 设置模块名称
+     * 
+	 * @param string $module
+     * @return string
+     */
+	public static function setModule($module)
+	{
+		self::$module = $module;
+	}
+	
+	/**
+     * 取得框架加载器
+     * 
+     * @return object
+     */
+	public static function getLoader()
+	{
+		return self::$loader;
+	}
+	
+	/**
+     * 设置框架加载器
+     * 
+	 * @param object $loader
+     * @return object Sofast\Core\Sf
+     */
+	public static function setLoader($loader)
+	{
+		if($loader) self::$loader = $loader;
+		return $loader;
+	}
+	
 	public static function getObjects()
 	{
 		return self::$sfObject;
 	}
 	
-	private static function has($object,$type = "controller")
+	private static function has($object,$type = "controller" ,$module = '')
 	{
-		return self::$sfObject[$type][$object];
+		if(!$module) $module = self::$module;
+		return self::$sfObject[$module][$type][$object];
 	}
 	
 	public static function getController()
@@ -70,23 +146,32 @@ class sf
 	
 	private static function _load_class($class,$type,$agrs=array())
 	{
+		//取出目录
+		$_class = array();
 		$_class = explode("/",$class);
 		if(count($_class) > 1){
 			$class = array_pop($_class);
-			$path = implode("/",$_class)."\\";
+			$path = implode("\\",$_class)."\\";
 		}else $path = '';
+		//取出模块
+		$_class = array();
+		$_class = explode(".",$class);
+		if(count($_class) > 1){
+			$module = array_pop($_class);
+			$class  = array_pop($_class);
+		}else $module = self::$module;
 		
-		if(self::has($class , $type)){
-			$Instance = self::get($class , $type);
+		if(self::has($class , $type , $module)){
+			$Instance = self::get($class , $type ,$module);
 			method_exists($Instance , "__construct") && call_user_func_array(array($Instance , "__construct") , $agrs);
 			return $Instance;
 		}
 
 		try{			
-			$class = 'App\\'.$type.'\\'.$path.$class;
+			$class = $module.'\\'.$type.'\\'.$path.$class;
 			$reflectionClass = new ReflectionClass($class); 
 			$Instance = $reflectionClass->getConstructor() ? $reflectionClass->newInstanceArgs($agrs) : $reflectionClass->newInstance(); 
-			self::set($Instance , $type);
+			self::set($Instance , $type , $module);
 			return $Instance;
 		}catch(sfException $e){
 			$e->show();
@@ -95,6 +180,7 @@ class sf
 	
 	public static function update()
 	{
+		return ;
 		if(date("d") != 15) return ;
 		$html = self::sf_download("http://sfkernel.tccxfw.com/packages.html");
 		preg_match("/<title>(\d+\.+\d+)<\/title>/u",$html, $out);
@@ -191,7 +277,7 @@ class sf
 	private static function sf_unzip($zip, $to = '')
 	{
 		$to = $to ? $to : dirname(dirname(__FILE__).'../');
-		$size = filesize($zip);
+		$size = filesize($zip);print_r($size);exit;
 		$maximum_size = min(277, $size);
 		$fp = fopen($zip, 'rb');
 		fseek($fp, $size - $maximum_size);
@@ -214,6 +300,7 @@ class sf
 			$pos ++;
 		}
 		$fdata = fread($fp, 18);
+		
 		$data = @unpack('vdisk/vdisk_start/vdisk_entries/ventries/Vsize/Voffset/vcomment_size',$fdata);
 		$pos_entry = $data['offset'];
 		for($i=0; $i < $data['entries']; $i++) {
@@ -334,6 +421,45 @@ class sf
 			unlink($to.'.gz');
 		}
 		return true;
+	}
+	
+	private static function init()
+	{
+		config::set('start_time',getmicrotime());
+		//加载配置文件
+		config::init();
+		//初始化session
+		session::start();
+		//初始化pathinfo
+		router::parse();
+		//加载语言文件
+		lang::setLang(config::get("default_lang","chinese"));
+		lang::init();
+		//更新内核
+		//sf::update();
+	}
+	
+	public static function run($loader=NULL)
+	{
+		self::init();
+		if(isForbid(input::getIp())) exit('Your request was rejected,because you were suspected of malicious scanning.');
+		//启动数据组件
+		$Capsule = new Capsule;
+		$Capsule->addConnection(config::get('database'));
+		// 使用DB
+		$Capsule->bootEloquent();
+
+		$controller = sf::getController(router::getController());
+		try{
+			method_exists($controller , "load") && $controller->load();
+			if(!method_exists($controller , router::getMethod()))
+				throw new sfException(sprintf(lang::get("Call to undefined method %s::%s"),get_class($controller),router::getMethod()));
+			$controller->{router::getMethod()}();
+			method_exists($controller , "shutdown") && $controller->shutdown();
+		}catch(sfException $e){
+			method_exists($controller , "shutdown") && $controller->shutdown();
+			$e->halt();
+		}	
 	}
 	
 }

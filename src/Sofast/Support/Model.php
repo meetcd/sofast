@@ -7,6 +7,9 @@ use Sofast\Support\Pager;
 
 class Model
 {	
+	private $fields = '*';
+	private $joins 	= array();
+	
 	public function __construct(){}
 	
 	public function __clone()
@@ -14,15 +17,36 @@ class Model
 		return $this->cleanObject();
 	}
 	
+	public function setFields($fields=array())
+	{
+		if(!in_array($this->primary_key,$fields)) $fields[] = $this->primary_key;
+		$this->fields = implode(',',$fields);
+		return $this;
+	}
+	
 	public function selectAll($addWhere = '',$addSql = '',$showMax = 0,$select = '')
 	{
 		$db = sf::getLib("db");
 		
 		if($select) $sql = $select." ";
-		else $sql = "SELECT * FROM ".$this->table." ";
+		else $sql = "SELECT $this->fields FROM ".$this->table." ";
 		$addWhere && $sql .= "WHERE ".$addWhere." ";
 		$addSql && $sql .= $addSql;
 		$showMax && $sql .= ' LIMIT '.$showMax;
+		
+		$query = $db->query($sql);
+		
+		return new collection(clone $this,$db->result_array($query));
+	}
+	
+	public function select($addWhere = '',$addSql = '',$start=0,$showMax = 0)
+	{
+		$db = sf::getLib("db");
+		
+		$sql = "SELECT $this->fields FROM ".$this->table." ";
+		$addWhere && $sql .= "WHERE ".$addWhere." ";
+		$addSql && $sql .= $addSql;
+		$showMax && $sql .= " LIMIT $start,$showMax ";
 		
 		$query = $db->query($sql);
 		
@@ -34,11 +58,11 @@ class Model
 		$db = sf::getLib("db");
 		
 		if($select) $sql = $select." ";
-		else $sql = "SELECT * FROM `".$this->table."` ";
+		else $sql = "SELECT $this->fields FROM `".$this->table."` ";
 		$addWhere && $sql .= "WHERE ".$addWhere." ";
 		$addSql && $sql .= $addSql." ";
 		
-		if(!router::get("totalnum".$key)){
+		if(!router::get("totalnum".$key) || count($_POST) > 0){
 			$_sql = "SELECT COUNT(*) AS NUM FROM `".$this->table."` ";
 			$addWhere && $_sql .= "WHERE ".$addWhere." ";
 			$addSql && $_sql .= $addSql." ";
@@ -66,7 +90,7 @@ class Model
 		$db = sf::getLib("db");
 		
 		if($select) $sql = $select." ";
-		else $sql = "SELECT * FROM `".$this->table."` ";
+		else $sql = "SELECT $this->fields FROM `".$this->table."` ";
 		$addWhere && $sql .= "WHERE ".$addWhere." ";
 		if($addSql) $sql .= $addSql." ";
 		else $sql .= " ORDER BY $sort $order ";

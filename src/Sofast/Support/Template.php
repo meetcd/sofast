@@ -4,57 +4,62 @@ use Sofast\Core\Config;
 use Sofast\Core\Sf;
 use Sofast\Core\Lang;
 
-class View
+class template
 {
-	private static $viewData = array();
-	private static $viewTpl = array();
-	private static $content = '';
-	private static $tplDir  = '';
-	private static $fomrs = array();
-
-	public static function set($key,$val='')
+	private $viewData = array();
+	private $viewTpl = array();
+	private $content = '';
+	private $tplDir  = '';
+	private $fomrs = array();
+	
+	function __construct($dir='')
 	{
-		if(is_array($key)) self::$viewData = array_merge_recursive(self::$viewData,$key);
-		else self::$viewData[$key] = $val;
+		$this->tplDir = $dir;
 	}
 	
-	public static function apply($name,$tpl)
+	public function set($key,$val='')
 	{
-		$tpl && self::$viewTpl[$name] = $tpl;
+		if(is_array($key)) $this->viewData = array_merge_recursive($this->viewData,$key);
+		else $this->viewData[$key] = $val;
 	}
 	
-	public static function setTplDir($dir)
+	public function apply($name,$tpl)
 	{
-		self::$tplDir = $dir;
+		$tpl && $this->viewTpl[$name] = $tpl;
 	}
 	
-	public static function getTplDir()
+	public function setTplDir($dir)
 	{
-		return self::$tplDir;
+		$this->tplDir = $dir;
 	}
 	
-	public static function getContent($tpl,$key='')
+	public function getTplDir()
 	{
-		if(!self::getTplDir()) self::setTplDir(config::get("view_dir"));
+		return $this->tplDir;
+	}
+	
+	public function getContent($tpl,$key='')
+	{
+		if(!$this->getTplDir()) $this->setTplDir(config::get("view_dir"));
 		$key = empty($key) ? $tpl : $key;
-		extract(self::$viewData);
+		extract($this->viewData);
 		ob_start();
-		if(is_file(self::getTplDir().$tpl.".php")){
-			include(self::getTplDir().$tpl.".php");
+		if(is_file($this->getTplDir().$tpl.".php")){
+			include($this->getTplDir().$tpl.".php");
 		}
-		self::$viewData[$key] = str_replace('xmgl.scst.gov.cn','202.61.89.120',ob_get_contents());//替换以前的域名
+		$this->viewData[$key] = str_replace('xmgl.scst.gov.cn','202.61.89.120',ob_get_contents());//替换以前的域名
 		ob_end_clean();
-		return self::$viewData[$key];
+		return $this->viewData[$key];
 	}
 	
-	public static function parse($tpl)
+	public function parse($tpl)
 	{
-		foreach(self::$viewTpl as $key => $file)
-			self::getContent($file,$key);
-		self::$content = self::getContent($tpl);
+		foreach($this->viewTpl as $key => $file)
+			$this->getContent($file,$key);
+		$this->content = $this->getContent($tpl);
 		//插入csrf
 		$_SESSION['__csrf'] = array();
-		self::$content = preg_replace_callback('/<\/form>/is',function(){return self::getCsrf()."\n</form>";},self::$content);
+		$this->content = preg_replace_callback('/<\/form>/is',function(){return $this->getCsrf()."\n</form>";},$this->content);
 		
 		if(config::get("auto_create_html",false))
 		{
@@ -68,10 +73,10 @@ class View
 			
 			if($file){
 				$file = WEBROOT.'/'.$file;
-				sf::getLib("Files")->write($file,self::$content);
+				sf::getLib("Files")->write($file,$this->content);
 			}
 		}
-		return self::$content;
+		return $this->content;
 	}
 	
 	private static function write($fileName,$content)
@@ -87,17 +92,17 @@ class View
 		else return false;
 	}
 	
-	public static function display($tpl)
+	public function display($tpl)
 	{
-		exit(self::parse($tpl));
+		exit($this->parse($tpl));
 	}
 
-	public static function part($tpl)
+	public function part($tpl)
 	{
-		return self::getContent($tpl);
+		return $this->getContent($tpl);
 	}
 	
-	public static function getCsrf()
+	public function getCsrf()
 	{
 		$_SESSION['__csrf']['num'] += 1;
 		$html = '';
@@ -111,10 +116,10 @@ class View
 	/**
 	 * 验证CSRF
 	 */
-	public static function checkCsrf()
+	public function checkCsrf()
 	{   
 		$num = (int)$_SESSION['__csrf']['num'];
-		if($num < 1) return false;
+		if($num < 1) return true;
 		for($i=1;$i<=$num;$i++){
 			$form_id = '__csrf_form_'.$i;
 			if(isset($_POST[$form_id]) && $_POST[$form_id] == $_SESSION['__csrf'][$form_id]){

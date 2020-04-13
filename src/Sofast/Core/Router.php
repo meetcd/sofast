@@ -10,6 +10,8 @@ class router
 	private static $uri_string = '';
 	private static $get = array();
 	private static $folder = '';
+	private static $module = 'App';
+	private static $loader = NULL;
 	
 	public static function getFolder()
 	{
@@ -19,6 +21,11 @@ class router
 	public static function getController()
 	{
 		return self::$get['controller'];
+	}
+	
+	public static function getModule()
+	{
+		return self::$get['module'];
 	}
 	
 	public static function get($key='')
@@ -48,7 +55,6 @@ class router
 	private static function set_request($get=array())
 	{
 		$loaders = spl_autoload_functions();
-		//findFile
 		try{
 			if(is_dir(config::get("controller_dir",APPPATH."controller/") . self::$folder.$get[0])){
 				self::$folder .= array_shift($get)."/";
@@ -57,7 +63,10 @@ class router
 			}elseif(is_file($loaders[0][0]->findFile('App\\Controller\\'.self::$folder.$get[0]))){
 				self::$get['controller'] = self::$folder.array_shift($get);
 				self::$get['method'] = $get[0] ? array_shift($get) : config::get("router.default_method",'index');
-			}else throw new sfException(lang::get("The controller is not find!"));
+			}else{//默认控制器
+				self::$get['controller'] = config::get("router.default_controller",'welcome');
+				self::$get['method'] = config::get("router.default_method",'index');
+			}
 
 			for($i=0,$n=count($get);$i<$n;$i+=2)
 				self::$get[$get[$i]] = str_replace("'","’",$get[($i+1)]);
@@ -96,7 +105,7 @@ class router
 	private static function parse_routes($path)
 	{
 		//过滤
-		$path = htmlspecialchars(ltrim($path,'/'));
+		$path = htmlspecialchars(ltrim($path,'/'),ENT_QUOTES);
 		//是否需要获取token
 		if(config::get('token_open',false) && config::get('parse_mode','PATH_INFO') == 'PATH_INFO'){
 			$info = explode("/",trim(str_replace('?','/',$path),"/"));
@@ -111,12 +120,11 @@ class router
 		}else{
 			if(config::get('parse_mode','PATH_INFO') == 'QUERY_STRING')
 			{
+				self::$get['module'] = $_GET[config::get("module_tag","module")] ? $_GET[config::get("module_tag","module")] : config::get("router.default_module",'App');
 				self::$get['controller'] = $_GET[config::get("controller_tag","module")] ? $_GET[config::get("controller_tag","module")] : config::get("router.default_controller",'welcome');
 				self::$get['method'] = $_GET[config::get("method_tag","act")] ? $_GET[config::get("method_tag","act")] : config::get("router.default_method",'index');
 			}else{
-				
 				$router = config::get("router.rule");
-
 				if(isset($router[$path]))
 				{
 					self::set_request(explode("/",$router[$path]));
@@ -133,7 +141,7 @@ class router
 							$val = preg_replace('#^'.$key.'$#', $val, $path);
 						}
 						self::set_request(explode('/', $val));
-						config::set("auto_create_html",true);//如果是为静态也面，则标记可以生成静态页面	
+						//config::set("auto_create_html",true);//如果是为静态也面，则标记可以生成静态页面	
 						return;
 					}
 				}

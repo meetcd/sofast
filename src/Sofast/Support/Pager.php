@@ -31,7 +31,7 @@ class Pager extends Collection
 		$this->navchar  = array(lang::get('page_first'),'[<]','[>]',lang::get('page_last'));
 		$querystring 	= array($_GET["controller"]."/".$_GET["method"]);
 		$form_vars && $this->setFormVars($form_vars);
-
+		
 		if (count($this->form_vars) > 0)
 		{
 			foreach ($this->form_vars as $val){
@@ -84,14 +84,14 @@ class Pager extends Collection
 
 	public function total()
 	{
-		return sprintf($this->configs['config.total'],$this->totalpage,$this->totalnum);
+		return sprintf($this->configs['page']['total'],$this->totalpage,$this->totalnum,$this->maxnum());
 	}
 
 	public function fromto()
 	{
 		$startnum = $this->startnum + 1;
 		if ($this->totalnum==0) $startnum = 0;
-		return sprintf($this->configs['page']['from_to'],$startnum,$this->endnum);
+		return sprintf($this->configs['page']['total'],$this->totalpage,$this->totalnum).sprintf($this->configs['page']['from_to'],$startnum,$this->endnum);
 	}
 
 	public function navbar($num_size=5,$nolink_show=false,$nolink_color="#ff0000")
@@ -153,10 +153,22 @@ class Pager extends Collection
 		$write .= "</select>";
 		return sprintf($this->configs['page']['jump'],$write,$this->totalpage);
 	}
-
+	
 	public function maxnum()
 	{
-		return sprintf($this->configs['page']['maxnum'],$this->maxnum);
+		if ($this->totalpage <= 1) return;
+		$name  = "maxnum".$this->key;
+		$write = "<select name='".$name."' id='maxnum' ";
+		$write .= "onchange='javascript:location.href=this.options[this.selectedIndex].value'>";
+		$_pernum = array(10,20,30,50,100);
+		foreach ($_pernum as $i)
+		{
+			$write .= "<option value=".$this->linkhead."/".$name."/".$i;
+			if ($this->maxnum == $i) $write .= " selected";
+			$write .= ">".$i."</option>";
+        }
+		$write .= "</select>";
+		return sprintf($this->configs['page']['maxnum'],$write);
 	}
 	
 	public function getStartNum()

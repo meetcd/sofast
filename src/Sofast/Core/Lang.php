@@ -10,6 +10,13 @@ class lang
 	private static $sfLang = array();//语言库
 	private static $lang = 'english';//当前语言
 
+	/**
+	 * 初始化语言翻译类
+	 * @Author   meetcd
+	 * @DateTime 2020-03-02T10:58:35+0800
+	 * @param    string $dir 语言文件存放路劲
+	 * @return   void
+	 */
 	public static function init($dir = '')
 	{
 		$dir = $dir ? APPPATH. $dir . '/' : APPPATH.'language/';
@@ -18,6 +25,9 @@ class lang
 
 	/**
 	 * 加载语言文件
+	 * @Author   meetcd
+	 * @DateTime 2020-03-02T10:49:45+0800
+	 * @return   [type]                   [description]
 	 */
 	public static function load()
 	{
@@ -28,6 +38,9 @@ class lang
 	
 	/**
 	 * 将当前的语言类型保存起来，在没有更换语言种类之前，默认采用当前语言
+	 * @Author   meetcd
+	 * @DateTime 2020-03-02T10:50:39+0800
+	 * @param    string  $lang 使用语言类型
 	 */
 	public static function setLang($lang='english')
 	{
@@ -41,6 +54,9 @@ class lang
 	
 	/**
 	 * 取得当前语言种类
+	 * @Author   meetcd
+	 * @DateTime 2020-03-02T10:51:12+0800
+	 * @return  string 当前语言的类型
 	 */
 	public static function getLang()
 	{
@@ -52,6 +68,8 @@ class lang
 	
 	/**
 	 * 向语言库加入新的语言翻译
+	 * @Author   meetcd
+	 * @DateTime 2020-03-02T10:51:45+0800
 	 */
 	public static function set()
 	{
@@ -72,6 +90,10 @@ class lang
 	
 	/**
 	 * 取得指定值的当前语言翻译
+	 * @Author   meetcd
+	 * @DateTime 2020-03-02T10:56:35+0800
+	 * @param    string $key 获取语言对应的标记
+	 * @return   string  获取对应标记的语言翻译内容
 	 */
 	public static function get($key='')
 	{
