@@ -6,7 +6,7 @@ use Sofast\Core\Lang;
 use Sofast\Core\Exception as sfException;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-class bootstrap {
+class Bootstrap {
 	private static function init()
 	{
 		config::set('start_time',getmicrotime());

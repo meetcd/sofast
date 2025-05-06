@@ -20,7 +20,7 @@ class Model
 	public function setFields($fields=array())
 	{
 		if(!in_array($this->primary_key,$fields)) $fields[] = $this->primary_key;
-		$this->fields = implode(',',$fields);
+		$this->fields = trim(implode(',',$fields),',');
 		return $this;
 	}
 	
@@ -80,7 +80,7 @@ class Model
 		return $pager;
 	}
 	
-	public function getJson($addWhere = '',$addSql = '',$showMax = 12)
+	public function json($addWhere = '',$addSql = '',$showMax = 12)
 	{
 		$sort = input::getInput("mix.sort") ? input::getInput("mix.sort") : 'id';
 		$order = input::getInput("mix.order") ? input::getInput("mix.order") : "asc";

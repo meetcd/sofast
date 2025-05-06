@@ -1,30 +1,30 @@
 <?php
 namespace Sofast\Core;
 /**
- * ÀàÃû£ºlang
- * ¹¦ÄÜ£º´¦ÀíÓïÑÔµÄ¹ú¼Ê»¯£¨¶àÓïÑÔ£©
+ * ç±»åï¼šlang
+ * åŠŸèƒ½ï¼šå¤„ç†è¯­è¨€çš„å›½é™…åŒ–ï¼ˆå¤šè¯­è¨€ï¼‰
  * $Id: language.class.php 158 2009-07-20 09:47:02Z meetcd $
  */
-class lang
+class Lang
 {
-	private static $sfLang = array();//ÓïÑÔ¿â
-	private static $lang = 'english';//µ±Ç°ÓïÑÔ
+	private static $sfLang = array();//è¯­è¨€åº“
+	private static $lang = 'english';//å½“å‰è¯­è¨€
 
 	/**
-	 * ³õÊ¼»¯ÓïÑÔ·­ÒëÀà
+	 * åˆå§‹åŒ–è¯­è¨€ç¿»è¯‘ç±»
 	 * @Author   meetcd
 	 * @DateTime 2020-03-02T10:58:35+0800
-	 * @param    string $dir ÓïÑÔÎÄ¼þ´æ·ÅÂ·¾¢
+	 * @param    string $dir è¯­è¨€æ–‡ä»¶å­˜æ”¾è·¯åŠ²
 	 * @return   void
 	 */
 	public static function init($dir = '')
 	{
-		$dir = $dir ? APPPATH. $dir . '/' : APPPATH.'language/';
+		$dir = $dir ? APPPATH. $dir . '/' : APPPATH.'Language/';
 		include_dir($dir.self::getLang());
 	}
 
 	/**
-	 * ¼ÓÔØÓïÑÔÎÄ¼þ
+	 * åŠ è½½è¯­è¨€æ–‡ä»¶
 	 * @Author   meetcd
 	 * @DateTime 2020-03-02T10:49:45+0800
 	 * @return   [type]                   [description]
@@ -37,37 +37,38 @@ class lang
 	}
 	
 	/**
-	 * ½«µ±Ç°µÄÓïÑÔÀàÐÍ±£´æÆðÀ´£¬ÔÚÃ»ÓÐ¸ü»»ÓïÑÔÖÖÀàÖ®Ç°£¬Ä¬ÈÏ²ÉÓÃµ±Ç°ÓïÑÔ
+	 * å°†å½“å‰çš„è¯­è¨€ç±»åž‹ä¿å­˜èµ·æ¥ï¼Œåœ¨æ²¡æœ‰æ›´æ¢è¯­è¨€ç§ç±»ä¹‹å‰ï¼Œé»˜è®¤é‡‡ç”¨å½“å‰è¯­è¨€
 	 * @Author   meetcd
 	 * @DateTime 2020-03-02T10:50:39+0800
-	 * @param    string  $lang Ê¹ÓÃÓïÑÔÀàÐÍ
+	 * @param    string  $lang ä½¿ç”¨è¯­è¨€ç±»åž‹
 	 */
-	public static function setLang($lang='english')
+	public static function setLang($lang='English')
 	{
+		$lang = ucfirst($lang);//å¤´å­—æ¯å¤§å†™
 		if($lang){
 			$_COOKIE[config::get("lang_cookie_name","sflang")] = $lang;
 			return self::$lang = $lang;
 		}
-		if($_COOKIE[config::get("lang_cookie_name","sflang")]) return self::$lang = $_COOKIE[config::get("lang_cookie_name","sflang")];
-		else return self::$lang = config::get("default_lang","english");
+		if($_COOKIE[config::get("lang_cookie_name","sflang")]) return self::$lang = ucfirst($_COOKIE[config::get("lang_cookie_name","sflang")]);
+		else return self::$lang = ucfirst(config::get("default_lang","English"));
 	}
 	
 	/**
-	 * È¡µÃµ±Ç°ÓïÑÔÖÖÀà
+	 * å–å¾—å½“å‰è¯­è¨€ç§ç±»
 	 * @Author   meetcd
 	 * @DateTime 2020-03-02T10:51:12+0800
-	 * @return  string µ±Ç°ÓïÑÔµÄÀàÐÍ
+	 * @return  string å½“å‰è¯­è¨€çš„ç±»åž‹
 	 */
 	public static function getLang()
 	{
-		if($_COOKIE[config::get("lang_cookie_name","sflang")])//ÒÑ¾­ÉèÖÃÁËÓïÑÔ¾ÍÖ±½Ó·µ»ØÓïÑÔÖÖÀà
-			return $_COOKIE[config::get("lang_cookie_name","sflang")];
-		!self::$lang && self::setLang();//Ã»ÓÐÓïÑÔÖÖÀà¾ÍÖ±½Ó²ÉÓÃÄ¬ÈÏÓïÑÔÖÖÀà
+		if($_COOKIE[config::get("lang_cookie_name","sflang")])//å·²ç»è®¾ç½®äº†è¯­è¨€å°±ç›´æŽ¥è¿”å›žè¯­è¨€ç§ç±»
+			return ucfirst($_COOKIE[config::get("lang_cookie_name","sflang")]);
+		!self::$lang && self::setLang();//æ²¡æœ‰è¯­è¨€ç§ç±»å°±ç›´æŽ¥é‡‡ç”¨é»˜è®¤è¯­è¨€ç§ç±»
 		return self::$lang;
 	}
 	
 	/**
-	 * ÏòÓïÑÔ¿â¼ÓÈëÐÂµÄÓïÑÔ·­Òë
+	 * å‘è¯­è¨€åº“åŠ å…¥æ–°çš„è¯­è¨€ç¿»è¯‘
 	 * @Author   meetcd
 	 * @DateTime 2020-03-02T10:51:45+0800
 	 */
@@ -89,13 +90,13 @@ class lang
 	}
 	
 	/**
-	 * È¡µÃÖ¸¶¨ÖµµÄµ±Ç°ÓïÑÔ·­Òë
+	 * å–å¾—æŒ‡å®šå€¼çš„å½“å‰è¯­è¨€ç¿»è¯‘
 	 * @Author   meetcd
 	 * @DateTime 2020-03-02T10:56:35+0800
-	 * @param    string $key »ñÈ¡ÓïÑÔ¶ÔÓ¦µÄ±ê¼Ç
-	 * @return   string  »ñÈ¡¶ÔÓ¦±ê¼ÇµÄÓïÑÔ·­ÒëÄÚÈÝ
+	 * @param    string $key èŽ·å–è¯­è¨€å¯¹åº”çš„æ ‡è®°
+	 * @return   string  èŽ·å–å¯¹åº”æ ‡è®°çš„è¯­è¨€ç¿»è¯‘å†…å®¹
 	 */
-	public static function get($key='')
+	public static function get($key='',$default='')
 	{
 		if(!$key) return self::$sfLang;
 		$keys = explode(".",$key);
@@ -104,6 +105,9 @@ class lang
 			$result = $result[$key];
 		}
 		if($result) return $result;
-		else return $key;//Ã»ÓÐ·­Òë¾ÍÖ±½Ó·µ»Øµ±Ç°×Ö·û
+		else{
+			if($default) return $default;
+			else return $key;//æ²¡æœ‰ç¿»è¯‘å°±ç›´æŽ¥è¿”å›žå½“å‰å­—ç¬¦
+		}
 	}
 }

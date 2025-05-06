@@ -36,7 +36,7 @@ class Pager extends Collection
 		{
 			foreach ($this->form_vars as $val){
 				if($_POST[$val]){
-					$querystring[] = $val."/".urlencode($_POST[$val]);
+					$querystring[] = htmlspecialchars($val)."/".urlencode(htmlspecialchars($_POST[$val]));
 					$has_post = true;
 				}
 			}
@@ -46,8 +46,8 @@ class Pager extends Collection
 		{
 			foreach ($_GET as $key => $val)
 			{
-				if (!in_array($key,array("totalnum".$this->key,"pagenum".$this->key,"controller","method",'_pjax')))
-					$querystring[] = $key."/".urlencode($val);
+				if (!in_array($key,array("totalnum".$this->key,"pagenum".$this->key,"controller","method",'_pjax',"maxnum".$this->key,)))
+					$querystring[] = htmlspecialchars($key)."/".urlencode(htmlspecialchars($val));
 			}
 		}
 
@@ -91,6 +91,7 @@ class Pager extends Collection
 	{
 		$startnum = $this->startnum + 1;
 		if ($this->totalnum==0) $startnum = 0;
+		
 		return sprintf($this->configs['page']['total'],$this->totalpage,$this->totalnum).sprintf($this->configs['page']['from_to'],$startnum,$this->endnum);
 	}
 
@@ -160,7 +161,7 @@ class Pager extends Collection
 		$name  = "maxnum".$this->key;
 		$write = "<select name='".$name."' id='maxnum' ";
 		$write .= "onchange='javascript:location.href=this.options[this.selectedIndex].value'>";
-		$_pernum = array(10,20,30,50,100);
+		$_pernum = array(10,20,50,100,150);
 		foreach ($_pernum as $i)
 		{
 			$write .= "<option value=".$this->linkhead."/".$name."/".$i;
