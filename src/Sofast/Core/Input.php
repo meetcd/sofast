@@ -1,18 +1,16 @@
 <?php
 namespace Sofast\Core;
-class input
-{
+class Input {
 	private static $sfInput = array();
 	private static $is_do = false;
-	
+
 	/**
-	 * ÊäÈë²ÎÊýÀà³õÊ¼»¯
+	 * åˆå§‹åŒ–
 	 * @Author   meetcd
 	 * @DateTime 2020-03-02T10:59:59+0800
-	 * @return   void 
+	 * @return   void
 	 */
-	public static function init()
-	{
+	public static function init() {
 		self::$sfInput['post'] = &$_POST;
 		self::$sfInput['get'] = &$_GET;
 		self::$sfInput['cookie'] = &$_COOKIE;
@@ -21,133 +19,156 @@ class input
 		self::$sfInput['request'] = &$_REQUEST;
 		self::$sfInput['session'] = &$_SESSION;
 		self::$sfInput['server'] = &$_SERVER;
-		array_walk_recursive(self::$sfInput,"processVariables");
-		//»ìºÏPOSTºÍGET²ÎÊý
+		self::$sfInput['json'] = self::getJson();
+		array_walk_recursive(self::$sfInput, "processVariables");
 		self::$sfInput['mix'] = array();
 		self::$sfInput['mix'] = array_merge(self::$sfInput['mix'], self::$sfInput['get']);
 		self::$sfInput['mix'] = array_merge(self::$sfInput['mix'], self::$sfInput['post']);
 		self::$is_do = true;
 	}
-	
+
 	/**
-	 * »ñÈ¡Ç°¶ËÊäÈë²ÎÊý
-	 * @Author   meetcd
-	 * @DateTime 2020-03-02T11:00:32+0800
-	 * @param    string  $key ÊäÈë²ÎÊýµÄ¼ü
-	 * @return   string  $key¶ÔÓ¦µÄ²ÎÊýÖµ
+	 * èŽ·å–è¾“å…¥
+	 * @param  string $key [description]
+	 * @return [type]      [description]
 	 */
-	public static function getInput($key='')
-	{
+	public static function getInput($key = '') {
 		!self::$is_do && self::init();
-		if(!$key) return self::$sfInput;
-		$keys = explode(".",$key);
+		if (!$key) {
+			return self::$sfInput;
+		}
+
+		$keys = explode(".", $key);
 		$result = self::$sfInput;
-		foreach($keys as $key){
+		foreach ($keys as $key) {
 			$result = $result[$key];
 		}
 		return $result;
 	}
-	
+
 	/**
-	 * »ñÈ¡»ìºÏÊäÈë²ÎÊý
-	 * @Author   meetcd
-	 * @DateTime 2020-03-02T11:01:36+0800
-	 * @param    string   $key »ìºÏ²ÎÊýµÄ¼ü
-	 * @return   [type]   $key¶ÔÓ¦µÄ»ìºÏ²ÎÊýµÄÖµ
+	 * èŽ·å–æ··åˆè¾“å…¥
+	 * @param  string $key [description]
+	 * @return [type]      [description]
 	 */
-	public static function getMix($key='')
-	{
-		if(self::getInput("post.".$key)) return self::getInput("post.".$key);
-		else if(self::get($key)) return self::get($key);
-		else return '';
+	public static function getMix($key = '') {
+		if (self::getInput("post." . $key)) {
+			return self::getInput("post." . $key);
+		} else if (self::get($key)) {
+			return self::get($key);
+		} else {
+			return '';
+		}
+
 	}
-	
+
 	/**
-	 * »ñÈ¡»ìºÏ²ÎÊý¾«¼òÐ´·¨
-	 * @Author   meetcd
-	 * @DateTime 2020-03-02T11:02:42+0800
-	 * @param    string                   $key »ìºÏ²ÎÊýµÄ¼ü
-	 * @return   string                   $key¶ÔÓ¦»ìºÏ²ÎÊýµÄÖµ
+	 * èŽ·å–æ··åˆè¾“å…¥
+	 * @param  string $key [description]
+	 * @return [type]      [description]
 	 */
-	public static function mix($key='')
-	{
-		if(self::getInput("post.".$key)) return self::getInput("post.".$key);
-		else if(self::getInput("get.".$key)) return self::getInput("get.".$key);
-		else return '';
+	public static function mix($key = '') {
+		if (self::getInput("post." . $key)) {
+			return self::getInput("post." . $key);
+		} else if (self::getInput("get." . $key)) {
+			return self::getInput("get." . $key);
+		} else {
+			return '';
+		}
+
 	}
-	
+
 	/**
-	 * »ñÈ¡POSTÊäÈë²ÎÊýµÄÖµ
-	 * @Author   meetcd
-	 * @DateTime 2020-03-02T11:03:56+0800
-	 * @param    string                   $key POST²ÎÊýµÄ¼ü
-	 * @return   [type]                   $key¶ÔÓ¦POST²ÎÊýµÄÖµ
+	 * èŽ·å–POSTè¾“å…¥
+	 * @param  string $key [description]
+	 * @return [type]      [description]
 	 */
-	public static function post($key='')
-	{
-		if(!$key) return $_POST;
+	public static function post($key = '') {
+		if (!$key) {
+			return $_POST;
+		}
+
 		return $_POST[$key];
 	}
-	
+
 	/**
-	 * »ñÈ¡GET²ÎÊýµÄÖµ
-	 * @Author   meetcd
-	 * @DateTime 2020-03-02T11:04:55+0800
-	 * @param    string                   $key GET²ÎÊýµÄ¼ü
-	 * @return   [type]                   $key¶ÔÓ¦µÄGET²ÎÊýµÄÖµ
+	 * èŽ·å–GETè¾“å…¥
+	 * @param  string $key [description]
+	 * @return [type]      [description]
 	 */
-	public static function get($key='')
-	{
-		if(!$key) return $_GET;
+	public static function get($key = '') {
+		if (!$key) {
+			return $_GET;
+		}
+
 		return $_GET[$key];
 	}
-	
+
 	/**
-	 * »ñÈ¡SESSION²ÎÊýÖµ
-	 * @Author   meetcd
-	 * @DateTime 2020-03-02T11:04:55+0800
-	 * @param    string                   $key SESSION²ÎÊýµÄ¼ü
-	 * @return   [type]                   $key¶ÔÓ¦µÄSESSION²ÎÊýµÄÖµ
+	 * èŽ·å–Jsonè¾“å…¥
+	 * @param  string $key [description]
+	 * @return [type]      [description]
 	 */
-	public static function session($key='')
-	{
-		if(!$key) return $_SESSION;
+	public static function json($key = '') {
+		$json = self::getJson();
+		if (!$key) {
+			return $json;
+		}
+		return $json[$key];
+	}
+
+	/**
+	 * èŽ·å–session
+	 * @param  string $key [description]
+	 * @return [type]      [description]
+	 */
+	public static function session($key = '') {
+		if (!$key) {
+			return $_SESSION;
+		}
+
 		return $_SESSION[$key];
 	}
-	
+
 	/**
-	 * »ñÈ¡SERVER²ÎÊýµÄÖµ
-	 * @Author   meetcd
-	 * @DateTime 2020-03-02T11:04:55+0800
-	 * @param    string                   $key SERVER²ÎÊýµÄ¼ü
-	 * @return   [type]                   $key¶ÔÓ¦µÄSERVER²ÎÊýµÄÖµ
+	 * èŽ·å–æœåŠ¡å™¨å‚æ•°
+	 * @param  string $key [description]
+	 * @return [type]      [description]
 	 */
-	public static function server($key='')
-	{
-		if(!$key) return $_SERVER;
+	public static function server($key = '') {
+		if (!$key) {
+			return $_SERVER;
+		}
+
 		return $_SERVER[$key];
 	}
-	
+
 	/**
-	 * »ñÈ¡¿Í»§¶ËIP
-	 * @Author   meetcd
-	 * @DateTime 2020-03-02T11:07:02+0800
-	 * @return  string  ¿Í»§¶ËIPµØÖ·
+	 * èŽ·å–IPåœ°å€
+	 * @return [type] [description]
 	 */
-	public static function getIp()
-	{
-		if ($_SERVER['HTTP_X_FORWARDED_FOR'])
-		{
-			 return $_SERVER['HTTP_X_FORWARDED_FOR'];
+	public static function getIp() {
+		if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
+			return $_SERVER['HTTP_X_FORWARDED_FOR'];
+		} elseif ($_SERVER['REMOTE_ADDR']) {
+			return $_SERVER['REMOTE_ADDR'];
+		} elseif ($_SERVER['HTTP_CLIENT_IP']) {
+			return $_SERVER['HTTP_CLIENT_IP'];
+		} else {
+			return '0.0.0.0';
 		}
-		elseif ($_SERVER['REMOTE_ADDR'])
-		{
-			 return $_SERVER['REMOTE_ADDR'];
-		}
-		elseif ($_SERVER['HTTP_CLIENT_IP'])
-		{
-			 return $_SERVER['HTTP_CLIENT_IP'];
-		}else return false;
+
 	}
-	
+
+	/**
+	 * èŽ·å–JSONæ•°æ®
+	 **/
+	private static function getJson() {
+		$jsonStr = file_get_contents("php://input");
+		if ($jsonData = json_decode($jsonStr, true)) {
+			return $jsonData;
+		} else {
+			return array();
+		}
+	}
 }

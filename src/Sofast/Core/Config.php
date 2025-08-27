@@ -1,51 +1,55 @@
 <?php
 namespace Sofast\Core;
 
-class config
-{
+class Config {
 	private static $sfConfig = array();
-	
-	public function __construct(){}
-	
-	public static function init($dir = '')
-	{
-		$dir = $dir ? APPPATH. $dir . '/' : APPPATH.'config/';
+
+	public function __construct() {}
+
+	public static function init($dir = '') {
+		$dir = $dir ? APPPATH . $dir . '/' : APPPATH . 'Config/';
 		include_dir($dir);
 	}
 
-	public static function load()
-	{
+	public static function load() {
 		$agrs = func_get_args();
-		for($i=0,$n=count($agrs);$i<$n;$i++)
+		for ($i = 0, $n = count($agrs); $i < $n; $i++) {
 			include_dir($agrs[$i]);
+		}
+
 	}
-	
-	public static function set()
-	{
+
+	public static function set() {
 		$agrs = func_get_args();
-		if(is_array($agrs[0]))
-			self::$sfConfig = array_merge(self::$sfConfig,$agrs[0]);
-		elseif($agrs[1]){
-			$keys = array_reverse(explode(".",$agrs[0]));
+		if (is_array($agrs[0])) {
+			self::$sfConfig = array_merge(self::$sfConfig, $agrs[0]);
+		} elseif ($agrs[1]) {
+			$keys = array_reverse(explode(".", $agrs[0]));
 			$val = $agrs[1];
-			foreach($keys as $key){
+			foreach ($keys as $key) {
 				$result = array();
 				$result[$key] = $val;
 				$val = $result;
 			}
-			self::$sfConfig = array_merge(self::$sfConfig,$result);
+			self::$sfConfig = array_merge(self::$sfConfig, $result);
 		}
 	}
-	
-	public static function get($key='',$val=NULL)
-	{
-		if(!$key) return self::$sfConfig;
-		$keys = explode(".",$key);
+
+	public static function get($key = '', $val = NULL) {
+		if (!$key) {
+			return self::$sfConfig;
+		}
+
+		$keys = explode(".", $key);
 		$result = self::$sfConfig;
-		foreach($keys as $key){
+		foreach ($keys as $key) {
 			$result = $result[$key];
 		}
-		if($result) return $result;
-		else return $val;
+		if ($result) {
+			return $result;
+		} else {
+			return $val;
+		}
+
 	}
 }
